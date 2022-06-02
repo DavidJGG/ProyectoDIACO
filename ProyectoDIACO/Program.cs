@@ -13,6 +13,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<AutenticacionService>();
 
+builder.Services.AddScoped<CreateUserService>();
+
+builder.Services.AddScoped<UpdateUserService>();
+
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -43,6 +47,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();

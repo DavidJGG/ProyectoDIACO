@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using ProyectoDIACO.Data;
 using ProyectoDIACO.Herramientas;
 using ProyectoDIACO.Models;
@@ -16,10 +17,13 @@ namespace ProyectoDIACO.Services
                 return false;
             }
 
+            propHttp.Session.SetInt32("usuarioId", resAuth.usuarioId);
             propHttp.Session.SetString("nombre", resAuth.Nombre);
             propHttp.Session.SetString("apellido", resAuth.Apellido);
             propHttp.Session.SetString("correo", resAuth.Correo);
             propHttp.Session.SetInt32("rol", (int)resAuth.Rol);
+
+            
 
             return true;
         }
@@ -29,20 +33,11 @@ namespace ProyectoDIACO.Services
             propHttp.Session.Clear();
         }
 
-        public void sssss(HttpContext propHttp)
-        {
-            propHttp.Session.SetString("prueba", ":)");
-        }
-
-        public void sssss2(HttpContext propHttp)
-        {
-            propHttp.Session.Clear();
-        }
-
 
         public bool isLogin(HttpContext propHttp)
         {
             var rol = propHttp.Session.GetInt32("rol");
+            
             if(rol ==1 || rol == 2)
             {
                 return true;
@@ -56,6 +51,20 @@ namespace ProyectoDIACO.Services
                 if (propHttp.Session.GetInt32("rol")==1) return true;
             }
             return false;
-        }            
+        }
+        
+        public void fillViewData(ViewDataDictionary viewData, HttpContext propHttp)
+        {
+            if (!isLogin(propHttp))
+            {
+                return;
+            }
+
+            viewData["usr_nombre"]=propHttp.Session.GetString("nombre");
+            viewData["usr_apellido"]=propHttp.Session.GetString("apellido");
+            viewData["usr_correo"]=propHttp.Session.GetString("correo");
+            viewData["usr_rol"] = propHttp.Session.GetInt32("rol");
+
+        }
     }
 }

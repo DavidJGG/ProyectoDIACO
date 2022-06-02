@@ -16,17 +16,32 @@ namespace ProyectoDIACO.Controllers
     {
         private readonly ProyectoDIACOContext _context;
         private readonly AutenticacionService _autenticacionService;
+        private readonly CreateUserService _createUserService;
+        private readonly UpdateUserService _updateUserService;
 
-        public UsuariosController(ProyectoDIACOContext context, AutenticacionService autenticacionService)
+        public UsuariosController(ProyectoDIACOContext context, AutenticacionService autenticacionService, CreateUserService createUserService, UpdateUserService updateUserService)
         {
             _context = context;
             _autenticacionService = autenticacionService;
+            _createUserService = createUserService;
+            _updateUserService = updateUserService;
         }
 
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-              return _context.Usuario != null ? 
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }               
+        
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
+            return _context.Usuario != null ? 
                           View(await _context.Usuario.ToListAsync()) :
                           Problem("Entity set 'ProyectoDIACOContext.Usuario'  is null.");
         }
@@ -34,6 +49,16 @@ namespace ProyectoDIACO.Controllers
         // GET: Usuarios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
             if (id == null || _context.Usuario == null)
             {
                 return NotFound();
@@ -52,6 +77,16 @@ namespace ProyectoDIACO.Controllers
         // GET: Usuarios/Create
         public IActionResult Create()
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
             return View();
         }
 
@@ -60,12 +95,27 @@ namespace ProyectoDIACO.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("usuarioId,nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
+                var result = await _createUserService.create(_context, usuario);
+
+                if ((bool)result["err"] == true)
+                {
+                    ViewData["err"] = true;
+                    ViewData["msg"] = result["msg"];
+                    return View(usuario);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(usuario);
@@ -74,6 +124,16 @@ namespace ProyectoDIACO.Controllers
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
             if (id == null || _context.Usuario == null)
             {
                 return NotFound();
@@ -92,8 +152,17 @@ namespace ProyectoDIACO.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("usuarioId,nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
+
             if (id != usuario.usuarioId)
             {
                 return NotFound();
@@ -101,30 +170,34 @@ namespace ProyectoDIACO.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var result = await _updateUserService.update(_context, usuario);
+
+                if ((bool)result["err"]==true)
                 {
-                    _context.Update(usuario);
-                    await _context.SaveChangesAsync();
+                    ViewData["err"] = true;
+                    ViewData["msg"] = result["msg"];
+                    return View(usuario);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(usuario.usuarioId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(usuario);
         }
 
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
             if (id == null || _context.Usuario == null)
             {
                 return NotFound();
@@ -145,6 +218,14 @@ namespace ProyectoDIACO.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!_autenticacionService.isAdmin(HttpContext))
+            {
+                if (_autenticacionService.isLogin(HttpContext))
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Login");
+            }
+
             if (_context.Usuario == null)
             {
                 return Problem("Entity set 'ProyectoDIACOContext.Usuario'  is null.");

@@ -19,11 +19,23 @@ namespace ProyectoDIACO.Controllers
 
         public IActionResult Index()
         {
+            if (!_autenticacionService.isLogin(HttpContext))
+                return RedirectToAction("Index", "Login");
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
+
             return View();
         }
 
         public IActionResult Privacy()
         {
+            if (!_autenticacionService.isLogin(HttpContext))
+                return RedirectToAction("Index", "Login");
+
+            _autenticacionService.fillViewData(ViewData, HttpContext);
+
+
             return View();
         }
 

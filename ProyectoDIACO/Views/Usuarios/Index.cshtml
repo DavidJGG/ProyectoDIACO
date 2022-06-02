@@ -4,12 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Usuarios en el sistema</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Nuevo usuario</a>
 </p>
-<table class="table">
+<table class="table table-striped" id="tablaUsers">
     <thead>
         <tr>
             <th>
@@ -20,9 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Correo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Contrasena)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nit)
@@ -49,23 +46,59 @@
                 @Html.DisplayFor(modelItem => item.Correo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Contrasena)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Nit)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fecha)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Rol)
+                @if(item.Rol == 1)
+                {
+                    <div>Administrador</div>
+                }
+                else
+                {
+                    <div>Usuario</div>
+                }
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.usuarioId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.usuarioId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.usuarioId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.usuarioId">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.usuarioId">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.usuarioId">Eliminar</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+
+<script>
+    $(document).ready( function () {
+        $('#tablaUsers').DataTable({
+            language: {
+                "decimal":        "",
+                "emptyTable":     "No hay resultados",
+                "info":           "Mostrando de _START_ a _END_ de _TOTAL_ entradas",
+                "infoEmpty":      "Mostrando de 0 a 0 de 0 entradas",
+                "infoFiltered":   "(Filtrado un total de _MAX_ entradas)",
+                "infoPostFix":    "",
+                "thousands":      ",",
+                "lengthMenu":     "Mostrar _MENU_ entradas",
+                "loadingRecords": "Cargando...",
+                "processing":     "",
+                "search":         "Buscar:",
+                "zeroRecords":    "No se encontraron coincidencias",
+                "paginate": {
+                    "first":      "Primero",
+                    "last":       "Ultimo",
+                    "next":       "Siguiente",
+                    "previous":   "Anterior"
+                },
+                "aria": {
+                    "sortAscending":  ": Ordenar ascendente",
+                    "sortDescending": ": Ordenar descendente"
+                }
+            }
+        });
+    } );
+</script>
