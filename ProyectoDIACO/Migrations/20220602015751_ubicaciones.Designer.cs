@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoDIACO.Data;
 
@@ -11,9 +12,10 @@ using ProyectoDIACO.Data;
 namespace ProyectoDIACO.Migrations
 {
     [DbContext(typeof(ProyectoDIACOContext))]
-    partial class ProyectoDIACOContextModelSnapshot : ModelSnapshot
+    [Migration("20220602015751_ubicaciones")]
+    partial class ubicaciones
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,66 +23,6 @@ namespace ProyectoDIACO.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("ProyectoDIACO.Models.Comercio", b =>
-                {
-                    b.Property<int>("ComercioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ComercioId"), 1L, 1);
-
-                    b.Property<int?>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Telefono")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ComercioId");
-
-                    b.ToTable("Comercio");
-                });
-
-            modelBuilder.Entity("ProyectoDIACO.Models.Sucursal", b =>
-                {
-                    b.Property<int>("SucursalId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SucursalId"), 1L, 1);
-
-                    b.Property<int>("ComercioId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MunicipioId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Telefono")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("SucursalId");
-
-                    b.HasIndex("ComercioId");
-
-                    b.HasIndex("MunicipioId");
-
-                    b.ToTable("Sucursal");
-                });
 
             modelBuilder.Entity("ProyectoDIACO.Models.Ubicacion", b =>
                 {
@@ -308,25 +250,6 @@ namespace ProyectoDIACO.Migrations
                     b.HasKey("usuarioId");
 
                     b.ToTable("Usuario");
-                });
-
-            modelBuilder.Entity("ProyectoDIACO.Models.Sucursal", b =>
-                {
-                    b.HasOne("ProyectoDIACO.Models.Comercio", "Comercio")
-                        .WithMany()
-                        .HasForeignKey("ComercioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoDIACO.Models.Ubicacion", "Ubicacion")
-                        .WithMany()
-                        .HasForeignKey("MunicipioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comercio");
-
-                    b.Navigation("Ubicacion");
                 });
 #pragma warning restore 612, 618
         }

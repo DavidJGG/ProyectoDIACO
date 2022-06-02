@@ -8,27 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoDIACO.Data;
 using ProyectoDIACO.Models;
 using ProyectoDIACO.Services;
-using ProyectoDIACO.Herramientas;
 
 namespace ProyectoDIACO.Controllers
 {
-    public class UsuariosController : Controller
+    public class SucursalsController : Controller
     {
         private readonly ProyectoDIACOContext _context;
         private readonly AutenticacionService _autenticacionService;
-        private readonly CreateUserService _createUserService;
-        private readonly UpdateUserService _updateUserService;
 
-        public UsuariosController(ProyectoDIACOContext context, AutenticacionService autenticacionService, CreateUserService createUserService, UpdateUserService updateUserService)
+        public SucursalsController(ProyectoDIACOContext context, AutenticacionService autenticacionService)
         {
             _context = context;
             _autenticacionService = autenticacionService;
-            _createUserService = createUserService;
-            _updateUserService = updateUserService;
         }
 
-        // GET: Usuarios
-        public async Task<IActionResult> Index()
+        // GET: Sucursals/id comercio
+        public async Task<IActionResult> Index(int id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -36,17 +31,17 @@ namespace ProyectoDIACO.Controllers
                     return RedirectToAction("Index", "Home");
 
                 return RedirectToAction("Index", "Login");
-            }               
-        
+            }
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            return _context.Usuario != null ? 
-                          View(await _context.Usuario.ToListAsync()) :
-                          Problem("Entity set 'ProyectoDIACOContext.Usuario'  is null.");
+            ViewData["id_comercio"] = id;
+
+            var proyectoDIACOContext = _context.Sucursal.Where(s=>s.ComercioId==id).Include(s => s.Comercio).Include(s => s.Ubicacion);
+            return View(await proyectoDIACOContext.ToListAsync());
         }
 
-        // GET: Usuarios/Details/5
+        // GET: Sucursals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
@@ -59,23 +54,26 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Usuario == null)
+
+            if (id == null || _context.Sucursal == null)
             {
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(m => m.usuarioId == id);
-            if (usuario == null)
+            var sucursal = await _context.Sucursal
+                .Include(s => s.Comercio)
+                .Include(s => s.Ubicacion)
+                .FirstOrDefaultAsync(m => m.SucursalId == id);
+            if (sucursal == null)
             {
                 return NotFound();
             }
 
-            return View(usuario);
+            return View(sucursal);
         }
 
-        // GET: Usuarios/Create
-        public IActionResult Create()
+        // GET: Sucursals/Create
+        public IActionResult Create(int id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -87,15 +85,20 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
+            ViewData["id_comercio"] = id;
+
+
+            //ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre");
+            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "Nombre");
             return View();
         }
 
-        // POST: Usuarios/Create
+        // POST: Sucursals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("SucursalId,Nombre,Direccion,Telefono,MunicipioId,ComercioId")] Sucursal sucursal)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -109,21 +112,16 @@ namespace ProyectoDIACO.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _createUserService.create(_context, usuario);
-
-                if ((bool)result["err"] == true)
-                {
-                    ViewData["err"] = true;
-                    ViewData["msg"] = result["msg"];
-                    return View(usuario);
-                }
-
-                return RedirectToAction(nameof(Index));
+                _context.Add(sucursal);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Sucursals", new { id = sucursal.ComercioId});
             }
-            return View(usuario);
+            ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
+            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "UbicacionId", sucursal.MunicipioId);
+            return View(sucursal);
         }
 
-        // GET: Usuarios/Edit/5
+        // GET: Sucursals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
@@ -136,25 +134,27 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Usuario == null)
+            if (id == null || _context.Sucursal == null)
             {
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
+            var sucursal = await _context.Sucursal.FindAsync(id);
+            if (sucursal == null)
             {
                 return NotFound();
             }
-            return View(usuario);
+            ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
+            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "UbicacionId", sucursal.MunicipioId);
+            return View(sucursal);
         }
 
-        // POST: Usuarios/Edit/5
+        // POST: Sucursals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("SucursalId,Nombre,Direccion,Telefono,MunicipioId,ComercioId")] Sucursal sucursal)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -166,29 +166,37 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id != usuario.usuarioId)
+            if (id != sucursal.SucursalId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var result = await _updateUserService.update(_context, usuario);
-
-                if ((bool)result["err"]==true)
+                try
                 {
-                    ViewData["err"] = true;
-                    ViewData["msg"] = result["msg"];
-                    return View(usuario);
+                    _context.Update(sucursal);
+                    await _context.SaveChangesAsync();
                 }
-
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SucursalExists(sucursal.SucursalId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(usuario);
+            ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
+            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "UbicacionId", sucursal.MunicipioId);
+            return View(sucursal);
         }
 
-        // GET: Usuarios/Delete/5
+        // GET: Sucursals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
@@ -201,22 +209,24 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Usuario == null)
+            if (id == null || _context.Sucursal == null)
             {
                 return NotFound();
             }
 
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(m => m.usuarioId == id);
-            if (usuario == null)
+            var sucursal = await _context.Sucursal
+                .Include(s => s.Comercio)
+                .Include(s => s.Ubicacion)
+                .FirstOrDefaultAsync(m => m.SucursalId == id);
+            if (sucursal == null)
             {
                 return NotFound();
             }
 
-            return View(usuario);
+            return View(sucursal);
         }
 
-        // POST: Usuarios/Delete/5
+        // POST: Sucursals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -231,23 +241,23 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (_context.Usuario == null)
+            if (_context.Sucursal == null)
             {
-                return Problem("Entity set 'ProyectoDIACOContext.Usuario'  is null.");
+                return Problem("Entity set 'ProyectoDIACOContext.Sucursal'  is null.");
             }
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario != null)
+            var sucursal = await _context.Sucursal.FindAsync(id);
+            if (sucursal != null)
             {
-                _context.Usuario.Remove(usuario);
+                _context.Sucursal.Remove(sucursal);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UsuarioExists(int id)
+        private bool SucursalExists(int id)
         {
-          return (_context.Usuario?.Any(e => e.usuarioId == id)).GetValueOrDefault();
+          return (_context.Sucursal?.Any(e => e.SucursalId == id)).GetValueOrDefault();
         }
     }
 }

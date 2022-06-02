@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoDIACO.Data;
 
@@ -11,9 +12,10 @@ using ProyectoDIACO.Data;
 namespace ProyectoDIACO.Migrations
 {
     [DbContext(typeof(ProyectoDIACOContext))]
-    partial class ProyectoDIACOContextModelSnapshot : ModelSnapshot
+    [Migration("20220602022317_comerciosSucursales")]
+    partial class comerciosSucursales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +32,12 @@ namespace ProyectoDIACO.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ComercioId"), 1L, 1);
 
-                    b.Property<int?>("Estado")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("Telefono")
+                        .HasMaxLength(8)
                         .HasColumnType("bigint");
 
                     b.HasKey("ComercioId");
@@ -59,9 +59,6 @@ namespace ProyectoDIACO.Migrations
                     b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Estado")
-                        .HasColumnType("int");
 
                     b.Property<int>("MunicipioId")
                         .HasColumnType("int");

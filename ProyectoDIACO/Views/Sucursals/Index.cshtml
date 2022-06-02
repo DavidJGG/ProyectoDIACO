@@ -1,0 +1,103 @@
+﻿@model IEnumerable<ProyectoDIACO.Models.Sucursal>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista de sucursales del comercio</h1>
+
+<p>
+    <a href="/Sucursals/Create/@ViewData["id_comercio"]">Nueva sucursal para el comercio</a>
+    <a href="/Comercios/Index"]"> | Atras</a>
+</p>
+<table class="table table-striped" id="tablaSucu">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ubicacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comercio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ubicacion.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comercio.Nombre)
+            </td>
+            <td>
+                @if (item.Estado == 1)
+                {
+                    <div class="badge bg-success">Activo</div>
+                }else{
+                    <div class="badge bg-danger">Inactivo</div>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SucursalId">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.SucursalId">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.SucursalId">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready( function () {
+        $('#tablaSucu').DataTable({
+            language: {
+                "decimal":        "",
+                "emptyTable":     "No hay resultados",
+                "info":           "Mostrando de _START_ a _END_ de _TOTAL_ entradas",
+                "infoEmpty":      "Mostrando de 0 a 0 de 0 entradas",
+                "infoFiltered":   "(Filtrado un total de _MAX_ entradas)",
+                "infoPostFix":    "",
+                "thousands":      ",",
+                "lengthMenu":     "Mostrar _MENU_ entradas",
+                "loadingRecords": "Cargando...",
+                "processing":     "",
+                "search":         "Buscar:",
+                "zeroRecords":    "No se encontraron coincidencias",
+                "paginate": {
+                    "first":      "Primero",
+                    "last":       "Ultimo",
+                    "next":       "Siguiente",
+                    "previous":   "Anterior"
+                },
+                "aria": {
+                    "sortAscending":  ": Ordenar ascendente",
+                    "sortDescending": ": Ordenar descendente"
+                }
+            }
+        });
+    } );
+</script>

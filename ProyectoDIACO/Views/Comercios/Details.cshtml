@@ -1,0 +1,39 @@
+﻿@model ProyectoDIACO.Models.Comercio
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detaille del comercio</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Estado==1){
+                <div class="badge bg-success">Activo</div>
+            }else{
+                <div class="badge bg-danger">Inactivo</div>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ComercioId">Editar</a> |
+    <a asp-action="Index">Atras</a>
+</div>

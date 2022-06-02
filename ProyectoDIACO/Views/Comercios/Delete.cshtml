@@ -1,0 +1,42 @@
+﻿@model ProyectoDIACO.Models.Comercio
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Borrar el comercio</h1>
+
+<h3>El comercio pasará a un estado inactivo ¿Está seguro?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Estado==1){
+                <div class="badge bg-success">Activo</div>
+            }else{
+                <div class="badge bg-danger">Inactivo</div>
+            }
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ComercioId" />
+        <input type="submit" value="Inactivar" class="btn btn-danger" /> |
+        <a asp-action="Index">Atras</a>
+    </form>
+</div>
