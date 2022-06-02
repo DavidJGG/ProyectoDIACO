@@ -34,9 +34,18 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ComercioId" />
-        <input type="submit" value="Inactivar" class="btn btn-danger" /> |
-        <a asp-action="Index">Atras</a>
-    </form>
+    @if(Model.Estado==0){
+        <form>
+            <input type="submit" disabled value="Inactivar" class="btn btn-danger" /> |
+            <a asp-action="Index">Atras</a>
+        </form>
+    }else{
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="ComercioId" />
+            <input type="submit" value="Inactivar" class="btn btn-danger" /> |
+            <a asp-action="Index">Atras</a>
+        </form>
+    }
+
+    
 </div>

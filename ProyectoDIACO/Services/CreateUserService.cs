@@ -16,6 +16,7 @@ namespace ProyectoDIACO.Services
                 result.Add("msg", "El correo ya esta registrado");
                 return result;
             }
+            model.Estado = 1;
             model.Contrasena = Encriptar.GetSHA1(model.Contrasena);
             db.Usuario.Add(model);
             db.SaveChanges();

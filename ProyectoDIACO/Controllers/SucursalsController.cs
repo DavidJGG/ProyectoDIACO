@@ -89,7 +89,10 @@ namespace ProyectoDIACO.Controllers
 
 
             //ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre");
-            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "Nombre");
+
+            ViewData["municipios"] = _context.Ubicacion.Where(u => u.Tipo==3).ToList();
+            ViewData["departamentos"] = _context.Ubicacion.Where(u => u.Tipo == 2).ToList();
+            ViewData["regiones"] = _context.Ubicacion.Where(u => u.Tipo == 1).ToList();
             return View();
         }
 
@@ -112,6 +115,7 @@ namespace ProyectoDIACO.Controllers
 
             if (ModelState.IsValid)
             {
+                sucursal.Estado = 1;
                 _context.Add(sucursal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Sucursals", new { id = sucursal.ComercioId});
@@ -144,8 +148,11 @@ namespace ProyectoDIACO.Controllers
             {
                 return NotFound();
             }
-            ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
-            ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "UbicacionId", sucursal.MunicipioId);
+            //ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
+
+            ViewData["municipios"] = _context.Ubicacion.Where(u => u.Tipo == 3).ToList();
+            ViewData["departamentos"] = _context.Ubicacion.Where(u => u.Tipo == 2).ToList();
+            ViewData["regiones"] = _context.Ubicacion.Where(u => u.Tipo == 1).ToList();
             return View(sucursal);
         }
 
@@ -154,7 +161,7 @@ namespace ProyectoDIACO.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SucursalId,Nombre,Direccion,Telefono,MunicipioId,ComercioId")] Sucursal sucursal)
+        public async Task<IActionResult> Edit(int id, [Bind("SucursalId,Nombre,Direccion,Telefono,Estado,MunicipioId,ComercioId")] Sucursal sucursal)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -189,7 +196,7 @@ namespace ProyectoDIACO.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id = sucursal.ComercioId});
             }
             ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
             ViewData["MunicipioId"] = new SelectList(_context.Ubicacion, "UbicacionId", "UbicacionId", sucursal.MunicipioId);
@@ -248,11 +255,12 @@ namespace ProyectoDIACO.Controllers
             var sucursal = await _context.Sucursal.FindAsync(id);
             if (sucursal != null)
             {
-                _context.Sucursal.Remove(sucursal);
+                sucursal.Estado = 0;
+                _context.Update(sucursal);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), new { id=sucursal.ComercioId });
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Usuarios");
         }
 
         private bool SucursalExists(int id)

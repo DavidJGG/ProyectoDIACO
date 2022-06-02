@@ -37,6 +37,7 @@ namespace ProyectoDIACO.Services
             oldData.Nit = model.Nit;
             oldData.Fecha = model.Fecha;
             oldData.Rol = model.Rol;
+            oldData.Estado = model.Estado;
 
             db.Update(oldData);
             await db.SaveChangesAsync();

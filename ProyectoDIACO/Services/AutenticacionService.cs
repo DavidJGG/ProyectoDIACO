@@ -11,7 +11,7 @@ namespace ProyectoDIACO.Services
     {
         public bool autenticar(HttpContext propHttp, ProyectoDIACOContext db, string correo, string contrasena)
         {
-            var resAuth = db.Usuario.Where(u => u.Correo == correo && u.Contrasena == Herramientas.Encriptar.GetSHA1(contrasena)).FirstOrDefault();
+            var resAuth = db.Usuario.Where(u => u.Estado==1 && u.Correo == correo && u.Contrasena == Herramientas.Encriptar.GetSHA1(contrasena)).FirstOrDefault();
             if(resAuth == null)
             {
                 return false;

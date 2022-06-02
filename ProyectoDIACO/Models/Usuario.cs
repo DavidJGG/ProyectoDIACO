@@ -35,5 +35,7 @@ namespace ProyectoDIACO.Models
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }
         public int? Rol { get; set; }
+
+        public int? Estado { get; set; } = 1;
     }
 }

@@ -30,6 +30,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Rol)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -59,6 +62,16 @@
                 else
                 {
                     <div>Usuario</div>
+                }
+            </td>            
+            <td>
+                @if(item.Estado == 1)
+                {
+                    <div class="badge bg-success">Activo</div>
+                }
+                else
+                {
+                    <div class="badge bg-danger">Inactivo</div>
                 }
             </td>
             <td>

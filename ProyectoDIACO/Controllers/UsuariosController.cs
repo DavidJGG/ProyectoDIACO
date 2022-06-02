@@ -154,7 +154,7 @@ namespace ProyectoDIACO.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("usuarioId,Nombre,Apellido,Correo,Contrasena,Nit,Fecha,Rol,Estado")] Usuario usuario)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -238,10 +238,11 @@ namespace ProyectoDIACO.Controllers
             var usuario = await _context.Usuario.FindAsync(id);
             if (usuario != null)
             {
-                _context.Usuario.Remove(usuario);
+                usuario.Estado = 0;
+                _context.Update(usuario);
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

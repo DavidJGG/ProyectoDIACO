@@ -4,9 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Editar sucursal</h1>
 
-<h4>Sucursal</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,25 +28,125 @@
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MunicipioId" class="control-label"></label>
-                <select asp-for="MunicipioId" class="form-control" asp-items="ViewBag.MunicipioId"></select>
-                <span asp-validation-for="MunicipioId" class="text-danger"></span>
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label class="control-label">Región</label>
+                        <select class="form-control" id="selectReg">
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="form-group">
+                        <label class="control-label">Departamento</label>
+                        <select class="form-control" id="selectDepto">
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="form-group">
+                        <label class="control-label">Municipio</label>
+                        <select asp-for="MunicipioId" class="form-control" id="selectMuni">
+
+                        </select>
+                        <span asp-validation-for="MunicipioId" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="ComercioId" class="control-label"></label>
-                <select asp-for="ComercioId" class="form-control" asp-items="ViewBag.ComercioId"></select>
-                <span asp-validation-for="ComercioId" class="text-danger"></span>
+                <input type="number" asp-for="ComercioId" class="form-control" hidden/>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="/Sucursals/Index/@Model.ComercioId">Atras</a>
 </div>
+
+
+<script>
+    var municipios = [];
+    var departamentos = [];
+    var regiones = [];
+
+
+</script>
+@foreach(var a in (List<Ubicacion>)ViewData["municipios"])
+{
+    <script>
+        municipios.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: @a.SububicacionId});
+    </script>
+}
+
+@foreach(var a in (List<Ubicacion>)ViewData["departamentos"])
+{
+    <script>
+        departamentos.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: @a.SububicacionId});
+    </script>
+}
+
+@foreach(var a in (List<Ubicacion>)ViewData["regiones"])
+{
+    <script>
+        regiones.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: 0});
+    </script>
+}
+
+<script>
+    function encodeHtml(cadena) {
+        if (cadena == null) return "";
+        return cadena.replace(/&/g, '')
+            .replace(/>/g, '')
+            .replace(/</g, '')
+            .replace(/"/g, '')
+            .replace(/'/g, '')
+            .replace(/\//g, '');
+    }
+
+    $(document).ready(()=>{
+        $("#selectReg").append(`<option value=""> --Seleccionar-- </option>`);
+        regiones.forEach((val)=>{
+            $("#selectReg").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+        });
+    });
+
+    $("#selectReg").change((event)=>{
+        let id = $("#selectReg").val();
+        $("#selectDepto").html("");
+        $("#selectDepto").append(`<option value=""> --Seleccionar-- </option>`);
+        departamentos.forEach((val)=>{
+            if(val.SububicacionId==id){
+                $("#selectDepto").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+            }
+        });
+    });
+
+    $("#selectDepto").change((event)=>{
+        let id = $("#selectDepto").val();
+        $("#selectMuni").html("");
+        $("#selectMuni").append(`<option value=""> --Seleccionar-- </option>`);
+        municipios.forEach((val)=>{
+            if(val.SububicacionId==id){
+                $("#selectMuni").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+            }
+        });
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

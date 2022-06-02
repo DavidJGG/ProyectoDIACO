@@ -36,7 +36,8 @@ namespace ProyectoDIACO.Controllers
             }
 
             ViewData["err"] = true;
-            ViewData["msg"] = "Usuario o contraseña incorrecta";
+            ViewData["msg"] = "No se pudo autenticar: Usuario o contraseña incorrecta";
+            ViewData["msg2"] = "Si usted tiene una cuenta, pongase en contacto con la DIACO porque su usuario esta deshabilitado";
             return View("Index");
         }
 

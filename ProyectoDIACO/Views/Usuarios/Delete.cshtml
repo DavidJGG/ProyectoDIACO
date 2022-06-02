@@ -1,12 +1,12 @@
 ﻿@model ProyectoDIACO.Models.Usuario
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar";
 }
 
-<h1>Eliminar</h1>
+<h1>Inactivar usuario</h1>
 
-<h3>¿Eliminar al usuario?</h3>
+<h3>El usuario pasara a un estado inactivo ¿Está seguro?</h3>
 <div>
     <hr />
     <dl class="row">
@@ -59,11 +59,32 @@
                 <div>Usuario</div>
             }
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Estado == 1)
+            {
+                <div class="badge bg-success">Activo</div>
+            }
+            else
+            {
+                <div class="badge bg-danger">Inactivo</div>
+            }
+        </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="usuarioId" />
-        <input type="submit" value="Borrar" class="btn btn-danger" /> |
-        <a asp-action="Index">Atras</a>
-    </form>
+    @if (Model.Estado == 0)
+    {
+        <form>
+            <input type="submit" value="Inactivar" disabled class="btn btn-danger" /> |
+            <a asp-action="Index">Atras</a>
+        </form>
+    }else{
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="usuarioId" />
+            <input type="submit" value="Inactivar" class="btn btn-danger" /> |
+            <a asp-action="Index">Atras</a>
+        </form>
+    }
 </div>
