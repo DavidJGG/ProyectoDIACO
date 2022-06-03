@@ -11,107 +11,100 @@ using ProyectoDIACO.Services;
 
 namespace ProyectoDIACO.Controllers
 {
-    public class ComerciosController : Controller
+    public class QuejasController : Controller
     {
         private readonly ProyectoDIACOContext _context;
         private readonly AutenticacionService _autenticacionService;
-
-        public ComerciosController(ProyectoDIACOContext context, AutenticacionService autenticacionService)
+        public QuejasController(ProyectoDIACOContext context, AutenticacionService autenticacionService)
         {
             _context = context;
             _autenticacionService = autenticacionService;
         }
 
-        // GET: Comercios
+        // GET: Quejas
         public async Task<IActionResult> Index()
         {
-            if (!_autenticacionService.isAdmin(HttpContext))
-            {
-                if (_autenticacionService.isLogin(HttpContext))
-                    return RedirectToAction("Index", "Home");
+            _autenticacionService.fillViewData(ViewData, HttpContext);
 
+            var proyectoDIACOContext = _context.Queja.Include(q => q.Sucursal).Include(q => q.Usuario);
+            return View(await proyectoDIACOContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> Misquejas()
+        {
+            if (!_autenticacionService.isLogin(HttpContext))
+            {                
                 return RedirectToAction("Index", "Login");
+            }
+
+            if (_autenticacionService.isAdmin(HttpContext))
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            return _context.Comercio != null ? 
-                          View(await _context.Comercio.ToListAsync()) :
-                          Problem("Entity set 'ProyectoDIACOContext.Comercio'  is null.");
+            var proyectoDIACOContext = _context.Queja.Where(q=>q.UsuarioId==HttpContext.Session.GetInt32("usuarioId")).Include(q => q.Sucursal).Include(q => q.Usuario);
+            return View(await proyectoDIACOContext.ToListAsync());
         }
 
-        // GET: Comercios/Details/5
+        // GET: Quejas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (!_autenticacionService.isAdmin(HttpContext))
-            {
-                if (_autenticacionService.isLogin(HttpContext))
-                    return RedirectToAction("Index", "Home");
-
-                return RedirectToAction("Index", "Login");
-            }
-
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Comercio == null)
+            if (id == null || _context.Queja == null)
             {
                 return NotFound();
             }
 
-            var comercio = await _context.Comercio
-                .FirstOrDefaultAsync(m => m.ComercioId == id);
-            if (comercio == null)
+            var queja = await _context.Queja
+                .Include(q => q.Sucursal.Comercio)
+                .Include(q => q.Usuario)
+                .FirstOrDefaultAsync(m => m.QuejaId == id);
+            if (queja == null)
             {
                 return NotFound();
             }
 
-            return View(comercio);
+            return View(queja);
         }
 
-        // GET: Comercios/Create
+        // GET: Quejas/Create
         public IActionResult Create()
         {
-            if (!_autenticacionService.isAdmin(HttpContext))
-            {
-                if (_autenticacionService.isLogin(HttpContext))
-                    return RedirectToAction("Index", "Home");
-
-                return RedirectToAction("Index", "Login");
-            }
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
+
+            ViewData["id_usuario"] = HttpContext.Session.GetInt32("usuarioId");
+            ViewData["Comercios"] = new SelectList(_context.Comercio.Where(c => c.Estado == 1).ToList(), "ComercioId", "Nombre");
 
             return View();
         }
 
-        // POST: Comercios/Create
+        // POST: Quejas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ComercioId,Nombre,Telefono")] Comercio comercio)
+        public async Task<IActionResult> Create([Bind("QuejaId,Detalle,Fecha,Estado,UsuarioId,SucursalId")] Queja queja)
         {
-            if (!_autenticacionService.isAdmin(HttpContext))
-            {
-                if (_autenticacionService.isLogin(HttpContext))
-                    return RedirectToAction("Index", "Home");
-
-                return RedirectToAction("Index", "Login");
-            }
-
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
             if (ModelState.IsValid)
             {
-                comercio.Estado = 1;
-                _context.Add(comercio);
+                queja.Estado = 1;
+                if (queja.UsuarioId == 0) queja.UsuarioId = null;
+                _context.Add(queja);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(comercio);
+            ViewData["Comercios"] = new SelectList(_context.Comercio.Where(c=>c.Estado==1).ToList(), "ComercioId", "Nombre");
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "usuarioId", "Apellido", queja.UsuarioId);
+            return View(queja);
         }
 
-        // GET: Comercios/Edit/5
+        // GET: Quejas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
@@ -124,25 +117,29 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Comercio == null)
+            if (id == null || _context.Queja == null)
             {
                 return NotFound();
             }
 
-            var comercio = await _context.Comercio.FindAsync(id);
-            if (comercio == null)
+            var queja = await _context.Queja.Where(q=>q.QuejaId==id).Include(q=>q.Sucursal.Comercio).FirstOrDefaultAsync();
+            if (queja == null)
             {
                 return NotFound();
             }
-            return View(comercio);
+
+            ViewData["id_usuario"] = HttpContext.Session.GetInt32("usuarioId");
+            ViewData["SucursalId"] = new SelectList(_context.Sucursal, "SucursalId", "Direccion", queja.SucursalId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "usuarioId", "Apellido", queja.UsuarioId);
+            return View(queja);
         }
 
-        // POST: Comercios/Edit/5
+        // POST: Quejas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ComercioId,Nombre,Telefono,Estado")] Comercio comercio)
+        public async Task<IActionResult> Edit(int id, [Bind("QuejaId,Detalle,Fecha,Estado,Resultado,UsuarioId,SucursalId")] Queja queja)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
             {
@@ -152,9 +149,10 @@ namespace ProyectoDIACO.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id != comercio.ComercioId)
+            if (id != queja.QuejaId)
             {
                 return NotFound();
             }
@@ -163,12 +161,12 @@ namespace ProyectoDIACO.Controllers
             {
                 try
                 {
-                    _context.Update(comercio);
+                    _context.Update(queja);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ComercioExists(comercio.ComercioId))
+                    if (!QuejaExists(queja.QuejaId))
                     {
                         return NotFound();
                     }
@@ -179,10 +177,13 @@ namespace ProyectoDIACO.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(comercio);
+
+            ViewData["SucursalId"] = new SelectList(_context.Sucursal, "SucursalId", "Direccion", queja.SucursalId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "usuarioId", "Apellido", queja.UsuarioId);
+            return View(queja);
         }
 
-        // GET: Comercios/Delete/5
+        // GET: Quejas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (!_autenticacionService.isAdmin(HttpContext))
@@ -193,24 +194,27 @@ namespace ProyectoDIACO.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (id == null || _context.Comercio == null)
+            if (id == null || _context.Queja == null)
             {
                 return NotFound();
             }
 
-            var comercio = await _context.Comercio
-                .FirstOrDefaultAsync(m => m.ComercioId == id);
-            if (comercio == null)
+            var queja = await _context.Queja
+                .Include(q => q.Sucursal)
+                .Include(q => q.Usuario)
+                .FirstOrDefaultAsync(m => m.QuejaId == id);
+            if (queja == null)
             {
                 return NotFound();
             }
 
-            return View(comercio);
+            return View(queja);
         }
 
-        // POST: Comercios/Delete/5
+        // POST: Quejas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -223,29 +227,26 @@ namespace ProyectoDIACO.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            if (_context.Comercio == null)
+            if (_context.Queja == null)
             {
-                return Problem("Entity set 'ProyectoDIACOContext.Comercio'  is null.");
+                return Problem("Entity set 'ProyectoDIACOContext.Queja'  is null.");
             }
-            var comercio = await _context.Comercio.FindAsync(id);
-            if (comercio != null)
+            var queja = await _context.Queja.FindAsync(id);
+            if (queja != null)
             {
-                if (comercio.Estado == 1) comercio.Estado = 0;
-                else comercio.Estado = 1
-                        ;
-                _context.Update(comercio);
-                await _context.SaveChangesAsync();
-
+                _context.Queja.Remove(queja);
             }
-
+            
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ComercioExists(int id)
+        private bool QuejaExists(int id)
         {
-          return (_context.Comercio?.Any(e => e.ComercioId == id)).GetValueOrDefault();
+          return (_context.Queja?.Any(e => e.QuejaId == id)).GetValueOrDefault();
         }
     }
 }

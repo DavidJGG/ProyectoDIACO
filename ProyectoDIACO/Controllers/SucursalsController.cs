@@ -89,7 +89,7 @@ namespace ProyectoDIACO.Controllers
 
 
             //ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre");
-
+            
             ViewData["municipios"] = _context.Ubicacion.Where(u => u.Tipo==3).ToList();
             ViewData["departamentos"] = _context.Ubicacion.Where(u => u.Tipo == 2).ToList();
             ViewData["regiones"] = _context.Ubicacion.Where(u => u.Tipo == 1).ToList();
@@ -149,6 +149,14 @@ namespace ProyectoDIACO.Controllers
                 return NotFound();
             }
             //ViewData["ComercioId"] = new SelectList(_context.Comercio, "ComercioId", "Nombre", sucursal.ComercioId);
+
+            Ubicacion municipio = _context.Ubicacion.Where(u => u.UbicacionId == sucursal.MunicipioId).FirstOrDefault();
+            Ubicacion departamento = _context.Ubicacion.Where(u => u.UbicacionId == municipio.SububicacionId).FirstOrDefault();
+            Ubicacion region = _context.Ubicacion.Where(u => u.UbicacionId == departamento.SububicacionId).FirstOrDefault();
+
+            ViewData["muniOld"] = municipio.UbicacionId;
+            ViewData["deptoOld"] = departamento.UbicacionId;
+            ViewData["regOld"] = region.UbicacionId;
 
             ViewData["municipios"] = _context.Ubicacion.Where(u => u.Tipo == 3).ToList();
             ViewData["departamentos"] = _context.Ubicacion.Where(u => u.Tipo == 2).ToList();
@@ -255,12 +263,18 @@ namespace ProyectoDIACO.Controllers
             var sucursal = await _context.Sucursal.FindAsync(id);
             if (sucursal != null)
             {
-                sucursal.Estado = 0;
+                if (sucursal.Estado == 1) sucursal.Estado = 0;
+                else sucursal.Estado = 1;
                 _context.Update(sucursal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { id=sucursal.ComercioId });
             }
             return RedirectToAction("Index","Usuarios");
+        }
+
+        public async Task<IEnumerable<Sucursal>> jsonSucursales(int id)
+        {
+            return _context.Sucursal.Where(s => s.ComercioId == id && s.Estado==1).Include(s=>s.Ubicacion);
         }
 
         private bool SucursalExists(int id)

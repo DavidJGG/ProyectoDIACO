@@ -4,9 +4,13 @@
     ViewData["Title"] = "Eliminar";
 }
 
-<h1>Inactivar sucursal</h1>
-
-<h3>La sucursal pasara a un estado inactiva ¿Está seguro?</h3>
+@if(Model.Estado==1){
+    <h1>Inactivar sucursal</h1>
+    <h3>La sucursal pasara a un estado inactivo ¿Está seguro?</h3>
+}else{
+    <h1>Activar sucursal</h1>
+    <h3>La sucursal pasara a un estado activo ¿Está seguro?</h3>
+}
 <div>
     <hr />
     <dl class="row">
@@ -54,8 +58,9 @@
     </dl>
     
     @if(Model.Estado==0){
-        <form>
-            <input type="submit" disabled value="Inactivar" class="btn btn-danger" /> |
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="SucursalId" />
+            <input type="submit" value="Activar" class="btn btn-success" /> |
             <a href="/Sucursals/Index/@Model.ComercioId">Atras</a>
         </form>
     }else{

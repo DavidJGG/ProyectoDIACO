@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ProyectoDIACO.Models.Queja>
+
+@{
+    ViewData["Title"] = "Misquejas";
+}
+
+<h1>Mis quejas</h1>
+
+<p>
+    <a asp-action="Create">Quejarme</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Detalle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Usuario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Resultado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Detalle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td>
+                @if (item.UsuarioId == null)
+                {
+                    <span>Anónimo</span>  
+                }else{
+                    <span>@Html.DisplayFor(modelItem => item.Usuario.Nombre)  @Html.DisplayFor(modelItem => item.Usuario.Apellido)</span>
+                }
+            </td>
+            <td>
+                @if (@item.Estado == 1)
+                {
+                    <div class="badge bg-warning">En proceso</div>
+                }else{
+                    <div class="badge bg-secondary">Finalizado</div>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Resultado)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.QuejaId">Details</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

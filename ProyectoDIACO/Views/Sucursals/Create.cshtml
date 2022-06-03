@@ -68,7 +68,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Atras</a>
+    <a href='/Sucursals/Index/@ViewData["id_comercio"]'>Atras</a>
 </div>
 
 <script>
@@ -81,39 +81,30 @@
 @foreach(var a in (List<Ubicacion>)ViewData["municipios"])
 {
     <script>
-        municipios.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: @a.SububicacionId});
+        municipios.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@Html.DisplayFor(items => a.Nombre)", SububicacionId: @a.SububicacionId});
     </script>
 }
 
 @foreach(var a in (List<Ubicacion>)ViewData["departamentos"])
 {
     <script>
-        departamentos.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: @a.SububicacionId});
+        departamentos.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@Html.DisplayFor(items => a.Nombre)", SububicacionId: @a.SububicacionId});
     </script>
 }
 
 @foreach(var a in (List<Ubicacion>)ViewData["regiones"])
 {
     <script>
-        regiones.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@a.Nombre", SububicacionId: 0});
+        regiones.push({UbicacionId: @a.UbicacionId, Tipo: @a.Tipo, Nombre: "@Html.DisplayFor(items => a.Nombre)", SububicacionId: 0});
     </script>
 }
 
 <script>
-    function encodeHtml(cadena) {
-        if (cadena == null) return "";
-        return cadena.replace(/&/g, '')
-            .replace(/>/g, '')
-            .replace(/</g, '')
-            .replace(/"/g, '')
-            .replace(/'/g, '')
-            .replace(/\//g, '');
-    }
 
     $(document).ready(()=>{
         $("#selectReg").append(`<option value=""> --Seleccionar-- </option>`);
         regiones.forEach((val)=>{
-            $("#selectReg").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+            $("#selectReg").append(`<option value="${val.UbicacionId}">${val.Nombre}</option>`);
         });
     });
 
@@ -123,7 +114,7 @@
         $("#selectDepto").append(`<option value=""> --Seleccionar-- </option>`);
         departamentos.forEach((val)=>{
             if(val.SububicacionId==id){
-                $("#selectDepto").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+                $("#selectDepto").append(`<option value="${val.UbicacionId}">${val.Nombre}</option>`);
             }
         });
     });
@@ -134,7 +125,7 @@
         $("#selectMuni").append(`<option value=""> --Seleccionar-- </option>`);
         municipios.forEach((val)=>{
             if(val.SububicacionId==id){
-                $("#selectMuni").append(`<option value="${val.UbicacionId}">${encodeHtml(val.Nombre)}</option>`);
+                $("#selectMuni").append(`<option value="${val.UbicacionId}">${val.Nombre}</option>`);
             }
         });
     });

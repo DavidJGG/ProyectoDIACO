@@ -55,5 +55,7 @@ namespace ProyectoDIACO.Data
         public DbSet<ProyectoDIACO.Models.Comercio>? Comercio { get; set; }
 
         public DbSet<ProyectoDIACO.Models.Sucursal>? Sucursal { get; set; }
+
+        public DbSet<ProyectoDIACO.Models.Queja>? Queja { get; set; }
     }
 }

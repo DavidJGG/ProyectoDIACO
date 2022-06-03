@@ -1,0 +1,53 @@
+﻿@model ProyectoDIACO.Models.Queja
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+<h3>¿La queja sera eliminada de forma permanente?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Detalle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Detalle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Usuario)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.UsuarioId == null)
+            {
+                <span>Anónimo</span>  
+            }else{
+                <span>@Html.DisplayFor(model => model.Usuario.Nombre)  @Html.DisplayFor(model => model.Usuario.Apellido)</span>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Sucursal)
+        </dt>
+        <dd class = "col-sm-10">
+            <p>
+                <strong>Comercio: </strong> @Html.DisplayFor(model => model.Sucursal.Comercio.Nombre) <br />
+                <strong>Sucursal: </strong> @Html.DisplayFor(model => model.Sucursal.Nombre) <br />
+                <strong>Direccion: </strong> @Html.DisplayFor(model => model.Sucursal.Direccion) <br />
+            </p> 
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="QuejaId" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

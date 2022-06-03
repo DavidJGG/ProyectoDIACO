@@ -29,11 +29,17 @@
                     <ul class="navbar-nav flex-grow-1">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Quejas</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Quejas" asp-action="Index">Quejas</a>
                         </li>
 
                         @if (ViewData["usr_rol"] != null)
                         {
+                            if((int)ViewData["usr_rol"]==2){
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Quejas/Misquejas">Mis Quejas</a>
+                                </li>
+                            }
+
                             if ((int)ViewData["usr_rol"] == 1)
                             {
                                 <li class="nav-item">

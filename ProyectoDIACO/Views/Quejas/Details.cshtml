@@ -1,0 +1,53 @@
+﻿@model ProyectoDIACO.Models.Queja
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Detalle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Detalle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Usuario)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.UsuarioId == null)
+            {
+                <span>Anónimo</span>  
+            }else{
+                <span>@Html.DisplayFor(model => model.Usuario.Nombre)  @Html.DisplayFor(model => model.Usuario.Apellido)</span>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Sucursal)
+        </dt>
+        <dd class = "col-sm-10">
+            <p>
+                <strong>Comercio: </strong> @Html.DisplayFor(model => model.Sucursal.Comercio.Nombre) <br />
+                <strong>Sucursal: </strong> @Html.DisplayFor(model => model.Sucursal.Nombre) <br />
+                <strong>Direccion: </strong> @Html.DisplayFor(model => model.Sucursal.Direccion) <br />
+            </p> 
+        </dd>
+    </dl>
+</div>
+<div>
+    @if(ViewData["usr_rol"]!=null && (int)ViewData["usr_rol"] == 1)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.QuejaId">Editar</a><span> | </span>
+    }
+    <a asp-action="Index">Atras</a>
+</div>

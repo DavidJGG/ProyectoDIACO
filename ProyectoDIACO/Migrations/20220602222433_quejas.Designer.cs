@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoDIACO.Data;
 
@@ -11,9 +12,10 @@ using ProyectoDIACO.Data;
 namespace ProyectoDIACO.Migrations
 {
     [DbContext(typeof(ProyectoDIACOContext))]
-    partial class ProyectoDIACOContextModelSnapshot : ModelSnapshot
+    [Migration("20220602222433_quejas")]
+    partial class quejas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

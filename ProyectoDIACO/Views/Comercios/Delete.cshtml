@@ -4,9 +4,13 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Borrar el comercio</h1>
-
-<h3>El comercio pasará a un estado inactivo ¿Está seguro?</h3>
+@if(Model.Estado==1){
+    <h1>Borrar el comercio</h1>
+    <h3>El comercio pasará a un estado inactivo ¿Está seguro?</h3>
+}else{
+    <h1>Activar el comercio</h1>
+    <h3>El comercio pasará a un estado activo ¿Está seguro?</h3>
+}
 <div>
     <hr />
     <dl class="row">
@@ -35,8 +39,9 @@
     </dl>
     
     @if(Model.Estado==0){
-        <form>
-            <input type="submit" disabled value="Inactivar" class="btn btn-danger" /> |
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="ComercioId" />
+            <input type="submit" value="Activar" class="btn btn-success" /> |
             <a asp-action="Index">Atras</a>
         </form>
     }else{
@@ -46,6 +51,5 @@
             <a asp-action="Index">Atras</a>
         </form>
     }
-
     
 </div>

@@ -63,7 +63,11 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SucursalId">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.SucursalId">Detalles</a> |
-                <a asp-action="Delete" asp-route-id="@item.SucursalId">Eliminar</a>
+                @if(item.Estado==1){
+                    <a asp-action="Delete" asp-route-id="@item.SucursalId">Eliminar</a>
+                }else{
+                    <a asp-action="Delete" asp-route-id="@item.SucursalId">Activar</a>
+                }
             </td>
         </tr>
 }
