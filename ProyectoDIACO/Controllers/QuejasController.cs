@@ -26,7 +26,7 @@ namespace ProyectoDIACO.Controllers
         {
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            var proyectoDIACOContext = _context.Queja.Include(q => q.Sucursal).Include(q => q.Usuario);
+            var proyectoDIACOContext = _context.Queja.Include(q => q.Sucursal).Include(q => q.Usuario).OrderByDescending(q => q.QuejaId);
             return View(await proyectoDIACOContext.ToListAsync());
         }
 
@@ -44,7 +44,7 @@ namespace ProyectoDIACO.Controllers
 
             _autenticacionService.fillViewData(ViewData, HttpContext);
 
-            var proyectoDIACOContext = _context.Queja.Where(q=>q.UsuarioId==HttpContext.Session.GetInt32("usuarioId")).Include(q => q.Sucursal).Include(q => q.Usuario);
+            var proyectoDIACOContext = _context.Queja.Where(q=>q.UsuarioId==HttpContext.Session.GetInt32("usuarioId")).OrderByDescending(q => q.QuejaId).Include(q => q.Sucursal).Include(q => q.Usuario);
             return View(await proyectoDIACOContext.ToListAsync());
         }
 
