@@ -4,9 +4,17 @@
     ViewData["Title"] = "Eliminar";
 }
 
-<h1>Inactivar usuario</h1>
+@if (Model.Estado == 1)
+{
+    <h1>Inactivar usuario</h1>
 
-<h3>El usuario pasara a un estado inactivo ¿Está seguro?</h3>
+    <h3>El usuario pasara a un estado inactivo ¿Está seguro?</h3>
+}else{
+    <h1>Activar usuario</h1>
+
+    <h3>El usuario pasara a un estado activo ¿Está seguro?</h3>
+}
+
 <div>
     <hr />
     <dl class="row">
@@ -76,15 +84,16 @@
     
     @if (Model.Estado == 0)
     {
-        <form>
-            <input type="submit" value="Inactivar" disabled class="btn btn-danger" /> |
-            <a asp-action="Index">Atras</a>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="usuarioId" />
+            <input type="submit" value="Activar" class="btn btn-success" /> 
+            <a asp-action="Index" class="btn btn-secondary">Atras</a>
         </form>
     }else{
         <form asp-action="Delete">
             <input type="hidden" asp-for="usuarioId" />
-            <input type="submit" value="Inactivar" class="btn btn-danger" /> |
-            <a asp-action="Index">Atras</a>
+            <input type="submit" value="Inactivar" class="btn btn-danger" /> 
+            <a asp-action="Index" class="btn btn-secondary">Atras</a>
         </form>
     }
 </div>

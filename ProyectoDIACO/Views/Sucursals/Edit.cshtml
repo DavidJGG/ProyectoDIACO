@@ -67,16 +67,16 @@
             <div class="form-group">
                 <input type="number" asp-for="ComercioId" class="form-control" hidden/>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
+                &nbsp;
+                <a href="/Sucursals/Index/@Model.ComercioId" class="btn btn-secondary">Atras</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a href="/Sucursals/Index/@Model.ComercioId">Atras</a>
-</div>
 
 
 <script>

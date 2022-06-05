@@ -58,15 +58,14 @@
                 </select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
+                &nbsp;
+                <a asp-action="Index" class="btn btn-secondary">Atras</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Atras</a>
 </div>
 
 @if (ViewData["err"]!=null && (bool)ViewData["err"] == true)

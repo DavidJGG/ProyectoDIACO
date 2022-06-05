@@ -4,6 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
+
+
+
 <h1>Ingresar una queja</h1>
 
 <hr />
@@ -37,23 +40,24 @@
                 </div>
                 <div class="col">
                     <div class="form-group">
-                        <label asp-for="SucursalId" class="control-label"></label>
+                        <label class="control-label"> Sucursal</label>
                         <select asp-for="SucursalId" class ="form-control" id="selecSucu">
 
                         </select>
                     </div>
                 </div>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                &nbsp;
+                <a asp-action="Index" class="btn btn-secondary">Atras</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Atras</a>
-</div>
+
 
 
 <script>

@@ -41,14 +41,14 @@
     @if(Model.Estado==0){
         <form asp-action="Delete">
             <input type="hidden" asp-for="ComercioId" />
-            <input type="submit" value="Activar" class="btn btn-success" /> |
-            <a asp-action="Index">Atras</a>
+            <input type="submit" value="Activar" class="btn btn-success" /> 
+            <a asp-action="Index" class="btn btn-secondary">Atras</a>
         </form>
     }else{
         <form asp-action="Delete">
             <input type="hidden" asp-for="ComercioId" />
-            <input type="submit" value="Inactivar" class="btn btn-danger" /> |
-            <a asp-action="Index">Atras</a>
+            <input type="submit" value="Inactivar" class="btn btn-danger" /> 
+            <a asp-action="Index" class="btn btn-secondary">Atras</a>
         </form>
     }
     

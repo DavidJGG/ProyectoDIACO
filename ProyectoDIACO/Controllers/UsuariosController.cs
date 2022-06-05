@@ -238,7 +238,9 @@ namespace ProyectoDIACO.Controllers
             var usuario = await _context.Usuario.FindAsync(id);
             if (usuario != null)
             {
-                usuario.Estado = 0;
+                if(usuario.Estado==1) usuario.Estado = 0;
+                else usuario.Estado = 1;
+
                 _context.Update(usuario);
                 await _context.SaveChangesAsync();
             }

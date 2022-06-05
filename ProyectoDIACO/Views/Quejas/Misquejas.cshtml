@@ -7,7 +7,7 @@
 <h1>Mis quejas</h1>
 
 <p>
-    <a asp-action="Create">Quejarme</a>
+    <a asp-action="Create" class="btn btn-primary">Quejarme</a>
 </p>
 <table class="table">
     <thead>
@@ -59,7 +59,7 @@
                 @Html.DisplayFor(modelItem => item.Resultado)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.QuejaId">Details</a> 
+                <a asp-action="Details" asp-route-id="@item.QuejaId" class="btn btn-sm btn-info text-white"><i class="bi bi-card-list"></i> Detailles</a> 
             </td>
         </tr>
 }

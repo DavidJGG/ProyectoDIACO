@@ -60,14 +60,14 @@
     @if(Model.Estado==0){
         <form asp-action="Delete">
             <input type="hidden" asp-for="SucursalId" />
-            <input type="submit" value="Activar" class="btn btn-success" /> |
-            <a href="/Sucursals/Index/@Model.ComercioId">Atras</a>
+            <input type="submit" value="Activar" class="btn btn-success" /> 
+            <a href="/Sucursals/Index/@Model.ComercioId" class="btn btn-secondary">Atras</a>
         </form>
     }else{
         <form asp-action="Delete">
             <input type="hidden" asp-for="SucursalId" />
-            <input type="submit" value="Inactivar" class="btn btn-danger" /> |
-            <a href="/Sucursals/Index/@Model.ComercioId">Atras</a>
+            <input type="submit" value="Inactivar" class="btn btn-danger" /> 
+            <a href="/Sucursals/Index/@Model.ComercioId" class="btn btn-secondary">Atras</a>
         </form>
     }
 </div>

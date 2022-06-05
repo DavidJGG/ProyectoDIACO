@@ -4,9 +4,10 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
 
-<h4>Usuario</h4>
+
+<h1>Crear Usuario</h1>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -50,16 +51,17 @@
                 </select>
                 <span asp-validation-for="Rol" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
+                &nbsp;
+                <a asp-action="Index" class="btn btn-secondary">Atras</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Atras</a>
-</div>
+
 
 @if (ViewData["err"]!=null && (bool)ViewData["err"] == true)
 {
