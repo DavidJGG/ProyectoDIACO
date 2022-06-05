@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="diacodb">
+  <ConnectionProperties>
+    <Extension>SQLAZURE</Extension>
+    <ConnectString>Server=tcp:diaco.database.windows.net,1433;Initial Catalog=diacodb;Persist Security Info=False;User ID=djgg;Password=David_123456789;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;</ConnectString>
+    <Prompt>creds</Prompt>
+  </ConnectionProperties>
+  <DataSourceID>4671a336-ccab-45e4-8ebd-56494c431eb2</DataSourceID>
+</RptDataSource>

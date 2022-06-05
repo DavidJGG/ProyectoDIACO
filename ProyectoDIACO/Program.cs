@@ -4,9 +4,13 @@ using ProyectoDIACO.Data;
 using ProyectoDIACO.Services;
 using ProyectoDIACO.Herramientas;
 
+
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ProyectoDIACOContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectoDIACOContext") ?? throw new InvalidOperationException("Connection string 'ProyectoDIACOContext' not found.")));
+
+
+builder.Services.AddDbContext<ProyectoDIACOContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectoDIACOContext")/* + "Password=" + builder.Configuration["DbPassword"] + ";" */ ?? throw new InvalidOperationException("Connection string 'ProyectoDIACOContext' not found."));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
