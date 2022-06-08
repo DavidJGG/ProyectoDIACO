@@ -4,6 +4,9 @@
 * ADMIN: david@gmail.com   ---    123456
 * Usuario: ruben@gmail.com  ----   987654
 
+* **ASP.NET Core 6**, MVC
+* **EntityFramework**, metodología "**Code First**"
+
 
 ![image](https://user-images.githubusercontent.com/60149403/172512964-133b71c9-5a7b-40b1-8e68-c1a879c1d151.png)
 
