@@ -9,12 +9,14 @@
 
 * * *
 
-### Ejemplo de una cadena de conexón local
+## Ejemplo de una cadena de conexón local
 ```
 Server=(localdb)\\mssqllocaldb;Database=ProyectoDIACO.Data;Trusted_Connection=True;MultipleActiveResultSets=true
 ```
 
 * * *
+
+## Preparación del entorno local
 
 ![image](https://user-images.githubusercontent.com/60149403/172512964-133b71c9-5a7b-40b1-8e68-c1a879c1d151.png)
 
